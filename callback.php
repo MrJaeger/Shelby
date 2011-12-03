@@ -14,11 +14,16 @@ session_start();
 	<head>
 		<title>Shelby+</title>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
 		<link rel="stylesheet" href="assets/css/style.css"/>
-		<script type="text/javascript" language="javascript" src="assets/js/jquery.js"></script>
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
 		<script type="text/javascript" src="assets/js/shelby-player.js"></script>
 		<script type="text/javascript">
+				var player;
+				var channel;
 				var ids = new Array();
+				var playids = new Array();
+				var imgs = new Array();
 				var i = 0;
 				var count = 0;
 				<?php foreach($broadcasts as $broadcast): ?>
@@ -27,10 +32,10 @@ session_start();
 				if(id!="" && i<100) {
 					$.getScript("http://gdata.youtube.com/feeds/api/videos/"+encodeURIComponent(id)+"?v=2&alt=json-in-script&callback=youtubeFeedCallback");
 					i++;
-					console.log("I: "+i);
+					imgs.push("<?php echo $broadcast->video_thumbnail_url; ?>");
+					playids.push("<?php echo $broadcast->_id; ?>");
 				}
 				function youtubeFeedCallback(data) {
-					console.log(count);
 					ids.push(data);
 					count++;
 					if(count==100) {
@@ -40,7 +45,35 @@ session_start();
 				<?php endif; ?>
 				<?php endforeach; ?>
 				function buildVids() {
-						console.log("ONCE, ONLY ONCE");
+						var categories = new Array();
+						var flag = 1;
+						for(var j = 0; j<count; j++) {
+							var category = ids[j].entry.category[1].term;
+							for(var k = 0; k<categories.length; k++) {
+								if(category==categories[k]) {
+									flag = 0;
+									break;
+								}
+							}
+							if(flag==1) {
+								categories.push(category);
+							}
+							flag = 1;
+						}
+						categories = categories.sort();
+						for(var m=0; m<categories.length; m++) {
+							$('#cats').append('<div id="'+categories[m]+'"></div>');
+							$('#'+categories[m]).append('<h2>'+categories[m]+'</div>');
+						}
+						for(var n = 0; n<count; n++) {
+							var cat = ids[n].entry.category[1].term;
+							$("#"+cat).append("<img src='"+imgs[n]+"' onclick='work("+n+")'/>");
+						}
+				}
+				function work(value) {
+					console.log(value);
+					window.scrollTo(0,0);
+					player.playBroadcast(channel, playids[value]);
 				}
 				$(function () {
 					var options = {
@@ -58,7 +91,7 @@ session_start();
 
 					  }
 					  if (data.state.videoEnded){
-
+					  	  player.togglePlay();
 					  }
 					  if (data.state.muted){
 
@@ -67,8 +100,8 @@ session_start();
 
 					  }
 					};
-					var player = new ShelbyPlayer(options, myStateChangeFunc);
-					var channel = "<?php echo $channels[0]->_id; ?>";
+					player = new ShelbyPlayer(options, myStateChangeFunc);
+					channel = "<?php echo $channels[0]->_id; ?>";
 					var broadcast = "<?php echo $broadcasts[0]->_id; ?>";
 					player.playBroadcast(channel, broadcast);
 				});
@@ -80,6 +113,8 @@ session_start();
 			<a id="logout" href="./logout.php">Log Out</a>
 		</header>
 		<div id="player-div">
+		</div>
+		<div id="cats">
 		</div>
 	</body>
 </html>
