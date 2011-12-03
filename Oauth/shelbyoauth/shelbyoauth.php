@@ -16,7 +16,7 @@ class ShelbyOAuth {
   /* Contains the last API call. */
   public $url;
   /* Set up the API root URL. */
-  public $host = "http://api.shelby.tv/v1/";
+  public $host = "http://api.shelby.tv/v2/";
   /* Set timeout default. */
   public $timeout = 30;
   /* Set connect timeout. */
@@ -33,6 +33,7 @@ class ShelbyOAuth {
   public $useragent = '';
   /* Immediately retry the API call if the response was not successful. */
   //public $retry = TRUE;
+  //public $test = 0;
 
 
 
@@ -156,6 +157,11 @@ class ShelbyOAuth {
     if (strrpos($url, 'https://') !== 0 && strrpos($url, 'http://') !== 0) {
       $url = "{$this->host}{$url}.{$this->format}";
     }
+    /*if($this->test === 1) {
+		print_r($url);    	
+    }
+    $this->test++;
+    */
     $request = OAuthRequest::from_consumer_and_token($this->consumer, $this->token, $method, $url, $parameters);
     $req_method = $is_plaintext ? $this->plaintext_method : $this->sha1_method;
     $request->sign_request($req_method, $this->consumer, $this->token);

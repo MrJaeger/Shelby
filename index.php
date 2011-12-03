@@ -1,3 +1,10 @@
+<?php
+session_start();
+if(isset($_SESSION['oauth_token']) && isset($_SESSION['oauth_token_secret'])) {
+	header("Location: ./callback.php");
+}
+?>
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -6,12 +13,8 @@
 	</head>
 	<body>
 		<h2>This is my attempt to Oauth with Shelby</h2>
-		<?php if (isset($menu)) { ?>
-        <?php echo $menu; ?>
-      	<?php } ?>
-      	<?php if (isset($status_text)) { ?>
-      	<?php echo '<h3>'.$status_text.'</h3>'; ?>
-   	    <?php } ?>
+		<?php echo "HELLO" ?>
+		<?php print_r($_SESSION['oauth_token']) ?>
    	    <p>
      	  <pre>
       	     <a href="Oauth/redirect.php">Connect with Shelby</a>
