@@ -13,7 +13,6 @@ if(isset($_SESSION['oauth_token']) && isset($_SESSION['oauth_token_secret'])) {
 	</head>
 	<body>
 		<h2>This is my attempt to Oauth with Shelby</h2>
-		<?php echo "HELLO" ?>
 		<?php print_r($_SESSION['oauth_token']) ?>
    	    <p>
      	  <pre>
