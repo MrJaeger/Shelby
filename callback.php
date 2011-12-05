@@ -21,6 +21,7 @@ session_start();
 		<script type="text/javascript">
 				var player;
 				var channel;
+				var videos = new Array();
 				var ids = new Array();
 				var playids = new Array();
 				var imgs = new Array();
@@ -30,13 +31,16 @@ session_start();
 				<?php if($broadcast->video_provider_name=="youtube"): ?>
 				var id = "<?php echo $broadcast->video_id_at_provider; ?>";
 				if(id!="" && i<100) {
+					videos.push(id);
 					$.getScript("http://gdata.youtube.com/feeds/api/videos/"+encodeURIComponent(id)+"?v=2&alt=json-in-script&callback=youtubeFeedCallback");
 					i++;
-					imgs.push("<?php echo $broadcast->video_thumbnail_url; ?>");
-					playids.push("<?php echo $broadcast->_id; ?>");
+					imgs[id] = "<?php echo $broadcast->video_thumbnail_url; ?>";
+					playids[id] = "<?php echo $broadcast->_id; ?>";
 				}
 				function youtubeFeedCallback(data) {
-					ids.push(data);
+					var array = data.entry.id.$t.split(":");
+					var video_id = array[array.length-1];
+					ids[video_id] = data;
 					count++;
 					if(count==100) {
 						buildVids();
@@ -48,7 +52,7 @@ session_start();
 						var categories = new Array();
 						var flag = 1;
 						for(var j = 0; j<count; j++) {
-							var category = ids[j].entry.category[1].term;
+							var category = ids[videos[j]].entry.category[1].term;
 							for(var k = 0; k<categories.length; k++) {
 								if(category==categories[k]) {
 									flag = 0;
@@ -66,14 +70,15 @@ session_start();
 							$('#'+categories[m]).append('<h2>'+categories[m]+'</div>');
 						}
 						for(var n = 0; n<count; n++) {
-							var cat = ids[n].entry.category[1].term;
-							$("#"+cat).append("<img src='"+imgs[n]+"' onclick='work("+n+")'/>");
+							var cat = ids[videos[n]].entry.category[1].term;
+							var string = new String(videos[n]);
+							$("#"+cat).append("<img src='"+imgs[videos[n]]+"'onclick='work("+n+")'/>");
 						}
 				}
 				function work(value) {
-					console.log(value);
 					window.scrollTo(0,0);
-					player.playBroadcast(channel, playids[value]);
+					console.log(value);
+					player.playBroadcast(channel, playids[videos[value]]);
 				}
 				$(function () {
 					var options = {
