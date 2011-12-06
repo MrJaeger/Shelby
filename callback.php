@@ -25,17 +25,17 @@ session_start();
 				var ids = new Array();
 				var playids = new Array();
 				var imgs = new Array();
-				var i = 0;
 				var count = 0;
-				<?php foreach($broadcasts as $broadcast): ?>
-				<?php if($broadcast->video_provider_name=="youtube"): ?>
-				var id = "<?php echo $broadcast->video_id_at_provider; ?>";
-				if(id!="" && i<100) {
-					videos.push(id);
-					$.getScript("http://gdata.youtube.com/feeds/api/videos/"+encodeURIComponent(id)+"?v=2&alt=json-in-script&callback=youtubeFeedCallback");
-					i++;
-					imgs[id] = "<?php echo $broadcast->video_thumbnail_url; ?>";
-					playids[id] = "<?php echo $broadcast->_id; ?>";
+				var json = <?php echo json_encode($broadcasts); ?>;
+				for(var i = 0; i<(json.length/2); i++) {
+					var id = json[i].video_id_at_provider;
+					console.log(id);
+					if(id!="") {
+						videos.push(id);
+						$.getScript("http://gdata.youtube.com/feeds/api/videos/"+encodeURIComponent(id)+"?v=2&alt=json-in-script&callback=youtubeFeedCallback");
+						imgs[id] = json[i].video_thumbnail_url;
+						playids[id] = json[i]._id;
+					}
 				}
 				function youtubeFeedCallback(data) {
 					var array = data.entry.id.$t.split(":");
@@ -46,8 +46,6 @@ session_start();
 						buildVids();
 					}
 				}
-				<?php endif; ?>
-				<?php endforeach; ?>
 				function buildVids() {
 						var categories = new Array();
 						var flag = 1;
@@ -107,7 +105,7 @@ session_start();
 					};
 					player = new ShelbyPlayer(options, myStateChangeFunc);
 					channel = "<?php echo $channels[0]->_id; ?>";
-					var broadcast = "<?php echo $broadcasts[0]->_id; ?>";
+					var broadcast = json[0]._id;
 					player.playBroadcast(channel, broadcast);
 				});
 		</script>
