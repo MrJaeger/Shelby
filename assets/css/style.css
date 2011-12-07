@@ -18,6 +18,14 @@ h1 {
 	width: 120px;
 }
 
+#popup {
+	border-radius: 5px;
+	padding: 0px 5px 5px 5px;
+	border: 5px solid #FF295E;
+	background: #FFF;
+	position: absolute;
+}
+
 #header {
 	width: 70%;
 	margin: 0px auto 0px auto;
@@ -41,7 +49,9 @@ h1 {
 	display: block;
 }
 
-#cats img {
+.cat_img {
+	z-index: 0;
+	position: relative;
 	cursor: pointer;
 	margin: 0px 20px 10px 0px;
 	clear: both;

@@ -28,9 +28,8 @@ session_start();
 			<h1>Shelby+</h1>
 			<a id="logout" href="./logout.php">Log Out</a>
 		</header>
-		<div id="player-div">
-		</div>
-		<div id="cats">
-		</div>
+		<div id="player-div"></div>
+		<div id="cats"></div>
+		<div id="popup" style="z-index:1000; display: none;"></div>
 	</body>
 </html>

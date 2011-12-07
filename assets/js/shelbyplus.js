@@ -1,5 +1,6 @@
 var player;
 var channel;
+var search = new Array();
 var videos = new Array();
 var ids = new Array();
 var playids = new Array();
@@ -27,6 +28,7 @@ function buildVids() {
 		var categories = new Array();
 		var flag = 1;
 		for(var j = 0; j<count; j++) {
+			addToSearch(j);
 			var category = ids[videos[j]].entry.category[1].term;
 			for(var k = 0; k<categories.length; k++) {
 				if(category==categories[k]) {
@@ -52,10 +54,34 @@ function buildVids() {
 		$(".cat_img").click( 
 			function() {
 				window.scrollTo(0,0);
-				console.log($(this).attr("value"));
 				player.playBroadcast(channel, playids[videos[$(this).attr("value")]]);			
 			}
 		);
+		$(".cat_img").hover(
+			function() {
+				var val = $(this).attr("value");
+				var pos = $(this).position();
+				var html = "<h3>"+json[val].video_title+"</h3>";
+				html += "<span>Posted By:  <b>"+json[val].video_originator_user_nickname+"</b> </span><img src='"+json[val].video_originator_user_image+"'/>";
+				$('#popup').html(html);
+				var height = $('#popup').height();
+				var width = $(this).width();
+				$('#popup').css({"width": "250px", "top": (pos.top-height-20)+"px", "left": (pos.left+(width/2))+"px"}).show();
+			}, function () {
+				$('#popup').hide();
+			}
+		)
+}
+function addToSearch(spot) {
+	for(var i = 2; i<ids[videos[spot]].entry.category.length; i++) {
+		var term = ids[videos[spot]].entry.category[i].term;
+		var check = search[term];
+		if(check==undefined) {
+			search[term] = new Array();
+		}
+			search[term][search[term].length] = videos[spot];
+			console.log(search[term]);
+	}
 }
 $(function () {
 	var options = {
