@@ -14,9 +14,8 @@ session_start();
 	<head>
 		<title>Shelby+</title>
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-		<link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
 		<link rel="stylesheet" href="assets/css/style.css"/>
-		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="assets/js/shelby-player.js"></script>
 		<script type="text/javascript">
 			var json = <?php echo json_encode($broadcasts); ?>;

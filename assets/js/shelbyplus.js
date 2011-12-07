@@ -7,7 +7,6 @@ var imgs = new Array();
 var count = 0;
 for(var i = 0; i<(json.length/2); i++) {
 	var id = json[i].video_id_at_provider;
-	console.log(id);
 	if(id!="") {
 		videos.push(id);
 		$.getScript("http://gdata.youtube.com/feeds/api/videos/"+encodeURIComponent(id)+"?v=2&alt=json-in-script&callback=youtubeFeedCallback");
@@ -48,13 +47,15 @@ function buildVids() {
 		for(var n = 0; n<count; n++) {
 			var cat = ids[videos[n]].entry.category[1].term;
 			var string = new String(videos[n]);
-			$("#"+cat).append("<img src='"+imgs[videos[n]]+"'onclick='work("+n+")'/>");
+			$("#"+cat).append("<img src='"+imgs[videos[n]]+"' class='cat_img' value='"+n+"'/>");
 		}
-}
-function work(value) {
-	window.scrollTo(0,0);
-	console.log(value);
-	player.playBroadcast(channel, playids[videos[value]]);
+		$(".cat_img").click( 
+			function() {
+				window.scrollTo(0,0);
+				console.log($(this).attr("value"));
+				player.playBroadcast(channel, playids[videos[$(this).attr("value")]]);			
+			}
+		);
 }
 $(function () {
 	var options = {
